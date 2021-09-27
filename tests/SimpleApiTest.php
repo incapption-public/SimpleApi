@@ -10,7 +10,7 @@ class SimpleApiTest extends TestCase
 {
 	protected function setUp(): void
 	{
-		include_once('SimpleApiExtension.php');
+
 	}
 
 	public function testApiControllerReturnsValidResult()
