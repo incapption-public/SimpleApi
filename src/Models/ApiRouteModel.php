@@ -1,10 +1,10 @@
 <?php
 
-namespace Incapption\SimpleRest\Models;
+namespace Incapption\SimpleApi\Models;
 
-use Incapption\SimpleRest\Enums\HttpMethod;
-use Incapption\SimpleRest\Interfaces\iApiController;
-use Incapption\SimpleRest\Interfaces\iApiMiddleware;
+use Incapption\SimpleApi\Enums\HttpMethod;
+use Incapption\SimpleApi\Interfaces\iApiController;
+use Incapption\SimpleApi\Interfaces\iApiMiddleware;
 
 class ApiRouteModel
 {

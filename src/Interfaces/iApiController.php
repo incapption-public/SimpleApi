@@ -1,12 +1,12 @@
 <?php
 
-namespace Incapption\SimpleRest\Interfaces;
+namespace Incapption\SimpleApi\Interfaces;
 
 interface iApiController
 {
-	public function get();
-	public function index();
-    public function create();
-    public function update();
-    public function delete();
+	public function get() : iMethodResult;
+	public function index() : iMethodResult;
+    public function create() : iMethodResult;
+    public function update() : iMethodResult;
+    public function delete() : iMethodResult;
 }

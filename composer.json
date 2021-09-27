@@ -18,11 +18,13 @@
   ],
   "require": {
     "php": ">=7.1",
-    "myclabs/php-enum": "^1.8"
+    "myclabs/php-enum": "^1.8",
+    "ext-json": "*"
   },
   "autoload": {
       "psr-4": {
-          "Incapption\\SimpleApi\\": "src/"
+          "Incapption\\SimpleApi\\": "src/",
+          "Incapption\\SimpleApi\\Tests\\": "tests/"
       }
   },
   "require-dev": {

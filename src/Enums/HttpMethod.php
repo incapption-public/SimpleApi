@@ -1,6 +1,6 @@
 <?php
 
-namespace Incapption\SimpleRest\Enums;
+namespace Incapption\SimpleApi\Enums;
 
 use MyCLabs\Enum\Enum;
 

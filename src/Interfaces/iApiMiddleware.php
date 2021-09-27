@@ -1,6 +1,6 @@
 <?php
 
-namespace Incapption\SimpleRest\Interfaces;
+namespace Incapption\SimpleApi\Interfaces;
 
 interface iApiMiddleware {
     public function authorize();

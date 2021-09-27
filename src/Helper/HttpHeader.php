@@ -1,6 +1,6 @@
 <?php
 
-namespace Incapption\SimpleRest\Helper;
+namespace Incapption\SimpleApi\Helper;
 
 /**
  * Class HttpHeader
@@ -17,14 +17,14 @@ class HttpHeader
         $header = [];
 
         foreach (getallheaders() as $name => $value) {
-            $header[mb_strtoupper($name)] = $value;
+            $header[strtoupper($name)] = $value;
         }
 
         return $header;
     }
 
     /**
-     * fetches a specfic http header and returns its value
+     * fetches a specific http header and returns its value
      *
      * @param $name
      *
