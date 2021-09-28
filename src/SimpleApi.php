@@ -3,8 +3,10 @@
 namespace Incapption\SimpleApi;
 
 use RuntimeException;
+use Incapption\SimpleApi\Helper\ApiRequest;
 use Incapption\SimpleApi\Models\StringResult;
 use Incapption\SimpleApi\Enums\HttpStatusCode;
+use Incapption\SimpleApi\Helper\RouteParameters;
 use Incapption\SimpleApi\Interfaces\iMethodResult;
 
 abstract class SimpleApi
@@ -51,7 +53,11 @@ abstract class SimpleApi
 	{
 		foreach (SimpleApiRoute::getRegisteredRoutes() as $item)
         {
-        	if ($item->getRoute() !== $this->requestUri || strtoupper($this->requestMethod) !==
+	        // parse route parameters and match the variables from requestUri
+	        ApiRequest::reset();
+	        ApiRequest::parseRouteParameters($item->getRoute(), $this->requestUri);
+
+        	if ($item->compareRouteAndRequestUri($item->getRoute(), $this->requestUri) === false || strtoupper($this->requestMethod) !==
 		        strtoupper($item->getHttpMethod()->getValue()))
 	        {
 	        	continue;
@@ -67,10 +73,12 @@ abstract class SimpleApi
 	        	throw new RuntimeException($item->getController().'->'.$item->getMethod().'() does not exist');
 	        }
 
-        	$controller = $item->getController();
-        	$method = $item->getMethod();
+        	// create instance of the controller
+	        $controller = $item->getController();
+	        $controller = new $controller();
 
-            $result = (new $controller())->$method();
+	        // call method
+            $result = call_user_func_array(array($controller, $item->getMethod()), []);
 
         	if ($result instanceof iMethodResult)
 	        {
