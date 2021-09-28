@@ -71,6 +71,8 @@ class ApiRequest
 	 */
 	public static function parseRouteParameters(string $route, string $requestUri)
 	{
+		self::reset();
+
 		/*
 		 * Compare the backslashes
 		 */

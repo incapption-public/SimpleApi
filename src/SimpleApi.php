@@ -54,7 +54,6 @@ abstract class SimpleApi
 		foreach (SimpleApiRoute::getRegisteredRoutes() as $item)
         {
 	        // parse route parameters and match them with variables from requestUri
-	        ApiRequest::reset();
 	        ApiRequest::parseRouteParameters($item->getRoute(), $this->requestUri);
 
         	if ($item->compareRouteAndRequestUri($item->getRoute(), $this->requestUri) === false || strtoupper($this->requestMethod) !==
