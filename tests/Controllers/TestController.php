@@ -2,6 +2,7 @@
 
 namespace Incapption\SimpleApi\Tests\Controllers;
 
+use Incapption\SimpleApi\Models\ApiRequest;
 use Incapption\SimpleApi\Models\StringResult;
 use Incapption\SimpleApi\Enums\HttpStatusCode;
 use Incapption\SimpleApi\Interfaces\iMethodResult;
@@ -9,27 +10,27 @@ use Incapption\SimpleApi\Interfaces\iApiController;
 
 class TestController implements iApiController
 {
-	public function get(): iMethodResult
+	public function get(ApiRequest $request): iMethodResult
 	{
 		return new StringResult(HttpStatusCode::SUCCESS(), 'TestController->get()');
 	}
 
-	public function index(): iMethodResult
+	public function index(ApiRequest $request): iMethodResult
 	{
 		return new StringResult(HttpStatusCode::SUCCESS(), 'TestController->index()');
 	}
 
-	public function create(): iMethodResult
+	public function create(ApiRequest $request): iMethodResult
 	{
 		return new StringResult(HttpStatusCode::SUCCESS(), 'TestController->create()');
 	}
 
-	public function update(): iMethodResult
+	public function update(ApiRequest $request): iMethodResult
 	{
 		return new StringResult(HttpStatusCode::SUCCESS(), 'TestController->update()');
 	}
 
-	public function delete(): iMethodResult
+	public function delete(ApiRequest $request): iMethodResult
 	{
 		return new StringResult(HttpStatusCode::SUCCESS(), 'TestController->delete()');
 	}

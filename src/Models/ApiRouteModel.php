@@ -3,8 +3,6 @@
 namespace Incapption\SimpleApi\Models;
 
 use Incapption\SimpleApi\Enums\HttpMethod;
-use Incapption\SimpleApi\Helper\ApiRequest;
-use Incapption\SimpleApi\Helper\RouteParameters;
 use Incapption\SimpleApi\Interfaces\iApiMiddleware;
 
 class ApiRouteModel
@@ -127,20 +125,5 @@ class ApiRouteModel
 	{
 		$this->middleware = $middleware;
 		return $this;
-	}
-
-	public function compareRouteAndRequestUri(string $route, string $requestUri) : bool
-	{
-		$routeParameters = ApiRequest::getAll();
-
-		foreach ($routeParameters as $key => $routeParameter)
-		{
-			$route = str_replace($routeParameter->getPlaceholder(), $routeParameter->getValue(), $route);
-		}
-
-		if($route === $requestUri)
-			return true;
-
-		return false;
 	}
 }

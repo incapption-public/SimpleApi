@@ -1,8 +1,6 @@
 <?php
 
-namespace Incapption\SimpleApi\Helper;
-
-use Incapption\SimpleApi\Models\RouteParameter;
+namespace Incapption\SimpleApi\Models;
 
 /**
  * Class ApiRequest
@@ -12,31 +10,28 @@ class ApiRequest
 	/**
 	 * @var RouteParameter[]
 	 */
-	private static $routeParameters;
+	private $routeParameters;
 
-	/**
-	 * @return void
-	 */
-	public static function reset()
+	public function __construct()
 	{
-		self::$routeParameters = [];
+		$this->routeParameters = [];
 	}
 
 	/**
 	 * @param RouteParameter $routeParameter
 	 */
-	public static function add(RouteParameter $routeParameter)
+	public function add(RouteParameter $routeParameter)
 	{
-		self::$routeParameters[] = $routeParameter;
+		$this->routeParameters[] = $routeParameter;
 	}
 
 	/**
 	 * @param $param
 	 * @return RouteParameter|null
 	 */
-	public static function get($param) : ?RouteParameter
+	public function get($param) : ?RouteParameter
 	{
-		foreach (self::$routeParameters as $routeParameter)
+		foreach ($this->routeParameters as $routeParameter)
 		{
 			if($routeParameter->getName() === $param)
 				return $routeParameter;
@@ -48,10 +43,10 @@ class ApiRequest
 	/**
 	 * @return RouteParameter[]|array
 	 */
-	public static function getAll() : ?array
+	public function getAll() : ?array
 	{
-		if(count(self::$routeParameters) > 0)
-			return self::$routeParameters;
+		if(count($this->routeParameters) > 0)
+			return $this->routeParameters;
 
 		return [];
 	}
@@ -69,10 +64,8 @@ class ApiRequest
 	 * @param string $route
 	 * @param string $requestUri
 	 */
-	public static function parseRouteParameters(string $route, string $requestUri)
+	public function parseRouteParameters(string $route, string $requestUri)
 	{
-		self::reset();
-
 		/*
 		 * Compare the backslashes
 		 */
@@ -134,9 +127,36 @@ class ApiRequest
 					$_routeParameter->setPlaceholder($placeholder[$j]);
 					$_routeParameter->setValue($parameters[$j]);
 
-					self::add($_routeParameter);
+					$this->add($_routeParameter);
 				}
 			}
 		}
+	}
+
+	/**
+	 * Replaces the placeholders in the route with the actual values
+	 * and compare route and requestUri
+	 *
+	 * e.g.
+	 * requestUri = /api/user/1/avatar/20
+	 * route = /api/user/{userId}/avatar/{avatarId} => /api/user/1/avatar/20
+	 *
+	 * @param string $route
+	 * @param string $requestUri
+	 * @return bool
+	 */
+	public function compareRouteAndRequestUri(string $route, string $requestUri) : bool
+	{
+		$routeParameters = $this->getAll();
+
+		foreach ($routeParameters as $routeParameter)
+		{
+			$route = str_replace($routeParameter->getPlaceholder(), $routeParameter->getValue(), $route);
+		}
+
+		if($route === $requestUri)
+			return true;
+
+		return false;
 	}
 }
