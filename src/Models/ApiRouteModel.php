@@ -7,123 +7,119 @@ use Incapption\SimpleApi\Interfaces\iApiMiddleware;
 
 class ApiRouteModel
 {
-	/**
-	 * @var string
-	 */
-	private $route;
+    /**
+     * @var string
+     */
+    private $route;
+    /**
+     * @var string
+     */
+    private $controller;
+    /**
+     * @var string
+     */
+    private $method;
+    /**
+     * @var iApiMiddleware|null
+     */
+    private $middleware;
+    /**
+     * @var HttpMethod
+     */
+    private $httpMethod;
 
-	/**
-	 * @var string
-	 */
-	private $controller;
+    /**
+     * @return HttpMethod
+     */
+    public function getHttpMethod(): HttpMethod
+    {
+        return $this->httpMethod;
+    }
 
-	/**
-	 * @var string
-	 */
-	private $method;
+    /**
+     * @param HttpMethod $httpMethod
+     *
+     * @return ApiRouteModel
+     */
+    public function setHttpMethod(HttpMethod $httpMethod): ApiRouteModel
+    {
+        $this->httpMethod = $httpMethod;
+        return $this;
+    }
 
-	/**
-	 * @var iApiMiddleware|null
-	 */
-	private $middleware;
+    /**
+     * @return string
+     */
+    public function getRoute(): string
+    {
+        return $this->route;
+    }
 
-	/**
-	 * @var HttpMethod
-	 */
-	private $httpMethod;
+    /**
+     * @param string $route
+     *
+     * @return ApiRouteModel
+     */
+    public function setRoute(string $route): ApiRouteModel
+    {
+        $this->route = $route;
+        return $this;
+    }
 
-	/**
-	 * @return HttpMethod
-	 */
-	public function getHttpMethod(): HttpMethod
-	{
-		return $this->httpMethod;
-	}
+    /**
+     * @return string
+     */
+    public function getController(): string
+    {
+        return $this->controller;
+    }
 
-	/**
-	 * @param HttpMethod $httpMethod
-	 *
-	 * @return ApiRouteModel
-	 */
-	public function setHttpMethod(HttpMethod $httpMethod): ApiRouteModel
-	{
-		$this->httpMethod = $httpMethod;
-		return $this;
-	}
+    /**
+     * @param string $controller
+     *
+     * @return ApiRouteModel
+     */
+    public function setController(string $controller): ApiRouteModel
+    {
+        $this->controller = $controller;
+        return $this;
+    }
 
-	/**
-	 * @return string
-	 */
-	public function getRoute(): string
-	{
-		return $this->route;
-	}
+    /**
+     * @return string
+     */
+    public function getMethod(): string
+    {
+        return $this->method;
+    }
 
-	/**
-	 * @param string $route
-	 *
-	 * @return ApiRouteModel
-	 */
-	public function setRoute(string $route): ApiRouteModel
-	{
-		$this->route = $route;
-		return $this;
-	}
+    /**
+     * @param string $method
+     *
+     * @return ApiRouteModel
+     */
+    public function setMethod(string $method): ApiRouteModel
+    {
+        $this->method = $method;
+        return $this;
+    }
 
-	/**
-	 * @return string
-	 */
-	public function getController(): string
-	{
-		return $this->controller;
-	}
+    /**
+     * @return iApiMiddleware|null
+     */
+    public function getMiddleware(): ?iApiMiddleware
+    {
+        return $this->middleware;
+    }
 
-	/**
-	 * @param string $controller
-	 *
-	 * @return ApiRouteModel
-	 */
-	public function setController(string $controller): ApiRouteModel
-	{
-		$this->controller = $controller;
-		return $this;
-	}
-
-	/**
-	 * @return string
-	 */
-	public function getMethod(): string
-	{
-		return $this->method;
-	}
-
-	/**
-	 * @param string $method
-	 *
-	 * @return ApiRouteModel
-	 */
-	public function setMethod(string $method): ApiRouteModel
-	{
-		$this->method = $method;
-		return $this;
-	}
-
-	/**
-	 * @return iApiMiddleware|null
-	 */
-	public function getMiddleware(): ?iApiMiddleware
-	{
-		return $this->middleware;
-	}
-
-	/**
-	 * @param iApiMiddleware|null $middleware
-	 *
-	 * @return ApiRouteModel
-	 */
-	public function setMiddleware(?iApiMiddleware $middleware): ApiRouteModel
-	{
-		$this->middleware = $middleware;
-		return $this;
-	}
+    /**
+     * @param iApiMiddleware|null $middleware
+     *
+     * @return ApiRouteModel
+     */
+    public function setMiddleware(?iApiMiddleware $middleware): ApiRouteModel
+    {
+        $this->middleware = $middleware;
+        return $this;
+    }
 }

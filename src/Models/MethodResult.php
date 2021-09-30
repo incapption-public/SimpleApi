@@ -6,18 +6,17 @@ use Incapption\SimpleApi\Enums\HttpStatusCode;
 
 abstract class MethodResult
 {
-	/**
-	 * @var HttpStatusCode
-	 */
-	protected $statusCode;
+    /**
+     * @var HttpStatusCode
+     */
+    protected $statusCode;
+    protected const JSON_KEY_STATUS_CODE = 'statusCode';
+    protected const JSON_KEY_PAYLOAD = 'payload';
 
-	protected const JSON_KEY_STATUS_CODE = 'statusCode';
-	protected const JSON_KEY_PAYLOAD = 'payload';
+    public function getStatusCode(): HttpStatusCode
+    {
+        return $this->statusCode;
+    }
 
-	public function getStatusCode(): HttpStatusCode
-	{
-		return $this->statusCode;
-	}
-
-	abstract function getJson() : string;
+    abstract function getJson(): string;
 }

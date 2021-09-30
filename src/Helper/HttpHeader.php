@@ -10,13 +10,15 @@ class HttpHeader
 {
     /**
      * Fetches all http headers and returns an array
+     *
      * @return array
      */
     public static function getAll(): array
     {
         $header = [];
 
-        foreach (getallheaders() as $name => $value) {
+        foreach (getallheaders() as $name => $value)
+        {
             $header[strtoupper($name)] = $value;
         }
 
@@ -34,7 +36,7 @@ class HttpHeader
     {
         $header = self::getAll();
 
-        if(empty($header[$name]))
+        if (empty($header[$name]))
             return false;
 
         return $header[$name];

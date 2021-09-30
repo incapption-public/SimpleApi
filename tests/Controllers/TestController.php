@@ -10,28 +10,28 @@ use Incapption\SimpleApi\Interfaces\iApiController;
 
 class TestController implements iApiController
 {
-	public function get(ApiRequest $request): iMethodResult
-	{
-		return new StringResult(HttpStatusCode::SUCCESS(), 'TestController->get()');
-	}
+    public function get(ApiRequest $request): iMethodResult
+    {
+        return new StringResult(HttpStatusCode::SUCCESS(), 'TestController->get()');
+    }
 
-	public function index(ApiRequest $request): iMethodResult
-	{
-		return new StringResult(HttpStatusCode::SUCCESS(), 'TestController->index()');
-	}
+    public function index(ApiRequest $request): iMethodResult
+    {
+        return new StringResult(HttpStatusCode::SUCCESS(), 'TestController->index()');
+    }
 
-	public function create(ApiRequest $request): iMethodResult
-	{
-		return new StringResult(HttpStatusCode::SUCCESS(), 'TestController->create()');
-	}
+    public function create(ApiRequest $request): iMethodResult
+    {
+        return new StringResult(HttpStatusCode::SUCCESS(), 'TestController->create()');
+    }
 
-	public function update(ApiRequest $request): iMethodResult
-	{
-		return new StringResult(HttpStatusCode::SUCCESS(), 'TestController->update()');
-	}
+    public function update(ApiRequest $request): iMethodResult
+    {
+        return new StringResult(HttpStatusCode::SUCCESS(), 'TestController->update()');
+    }
 
-	public function delete(ApiRequest $request): iMethodResult
-	{
-		return new StringResult(HttpStatusCode::SUCCESS(), 'TestController->delete()');
-	}
+    public function delete(ApiRequest $request): iMethodResult
+    {
+        return new StringResult(HttpStatusCode::SUCCESS(), 'TestController->delete()');
+    }
 }

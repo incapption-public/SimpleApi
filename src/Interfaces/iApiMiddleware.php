@@ -4,6 +4,7 @@ namespace Incapption\SimpleApi\Interfaces;
 
 use Incapption\SimpleApi\Models\ApiRequest;
 
-interface iApiMiddleware {
+interface iApiMiddleware
+{
     public function handle(ApiRequest $apiRequest);
 }

@@ -12,8 +12,8 @@ use MyCLabs\Enum\Enum;
  */
 class HttpStatusCode extends Enum
 {
-	private const SUCCESS = 200;
-	private const UNAUTHORIZED = 401;
-	private const NOT_FOUND = 404;
-	private const UNPROCESSABLE_ENTITY = 422;
+    private const SUCCESS = 200;
+    private const UNAUTHORIZED = 401;
+    private const NOT_FOUND = 404;
+    private const UNPROCESSABLE_ENTITY = 422;
 }
