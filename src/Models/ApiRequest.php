@@ -8,45 +8,90 @@ namespace Incapption\SimpleApi\Models;
 class ApiRequest
 {
 	/**
-	 * @var RouteParameter[]
+	 * @var ResourceParameter[]
 	 */
-	private $routeParameters;
+	private $resourceParameters;
 
-	public function __construct()
+	/**
+	 * @var array
+	 */
+	private $headers;
+
+	/**
+	 * @var array
+	 */
+	private $input;
+
+	/**
+	 * ApiRequest constructor.
+	 *
+	 * @param array $headers The request headers
+	 * @param array $input The input of $_REQUEST ($_GET, $_POST and $_COOKIE)
+	 */
+	public function __construct(array $headers, array $input)
 	{
-		$this->routeParameters = [];
+		$this->resourceParameters = [];
+		$this->headers            = $headers;
+		$this->input              = $input;
 	}
 
 	/**
-	 * @param RouteParameter $routeParameter
+	 * @param string $key The key of the input
+	 *
+	 * @return mixed|null
 	 */
-	public function addRouteParameter(RouteParameter $routeParameter)
+	public function input(string $key)
 	{
-		$this->routeParameters[] = $routeParameter;
+		return array_key_exists($key, $this->input) ? $this->input[$key] : null;
+	}
+
+	/**
+	 * @param string $key The key of the header
+	 *
+	 * @return mixed|null
+	 */
+	public function header(string $key)
+	{
+		return array_key_exists($key, $this->headers) ? $this->headers[$key] : null;
+	}
+
+	/**
+	 * @param ResourceParameter $routeParameter
+	 */
+	private function addResourceParameter(ResourceParameter $routeParameter)
+	{
+		$this->resourceParameters[] = $routeParameter;
 	}
 
 	/**
 	 * @param $param
-	 * @return RouteParameter|null
+	 *
+	 * @return ResourceParameter|null
 	 */
-	public function get($param) : ?RouteParameter
+	public function getResourceParameter($param): ?ResourceParameter
 	{
-		foreach ($this->routeParameters as $routeParameter)
+		foreach ($this->resourceParameters as $routeParameter)
 		{
-			if($routeParameter->getName() === $param)
+			if ($routeParameter->getKey() === $param)
+			{
 				return $routeParameter;
+			}
+
 		}
 
 		return null;
 	}
 
 	/**
-	 * @return RouteParameter[]|array
+	 * @return ResourceParameter[]|array
 	 */
-	public function getAll() : ?array
+	public function getAllResourceParameters() : ?array
 	{
-		if(count($this->routeParameters) > 0)
-			return $this->routeParameters;
+		if(count($this->resourceParameters) > 0)
+		{
+			return $this->resourceParameters;
+		}
+
 
 		return [];
 	}
@@ -64,16 +109,18 @@ class ApiRequest
 	 * @param string $route
 	 * @param string $requestUri
 	 */
-	public function parseRouteParameters(string $route, string $requestUri)
+	public function parseResourceParameters(string $route, string $requestUri)
 	{
 		/*
-		 * Compare the backslashes
+		 * Compare the slashes
 		 */
 		if(substr_count($route, '/') !== substr_count($requestUri, '/'))
+		{
 			return;
+		}
 
 		/*
-		 * Cut the route at each backslash
+		 * Cut the route at each slash
 		 *
 		 * e.g.
 		 * /api/user/{userId}/avatar/{avatarId}
@@ -82,7 +129,7 @@ class ApiRequest
 		$placeholder = explode('/', $route);
 
 		/*
-		 * Cut the requestUri at each backslash
+		 * Cut the requestUri at each slash
 		 *
 		 * e.g.
 		 * /api/user/1/avatar/20
@@ -122,12 +169,8 @@ class ApiRequest
 				 */
 				if ($placeholder[$j] === $matches[0][$i] && is_numeric($parameters[$j]))
 				{
-					$_routeParameter = new RouteParameter();
-					$_routeParameter->setName($matches[1][$i]);
-					$_routeParameter->setPlaceholder($placeholder[$j]);
-					$_routeParameter->setValue($parameters[$j]);
-
-					$this->addRouteParameter($_routeParameter);
+					$_routeParameter = new ResourceParameter($matches[1][$i], $parameters[$j], $placeholder[$j]);
+					$this->addResourceParameter($_routeParameter);
 				}
 			}
 		}
@@ -148,7 +191,7 @@ class ApiRequest
 	 */
 	public function compareRouteAndRequestUri(string $route, string $requestUri) : bool
 	{
-		$routeParameters = $this->getAll();
+		$routeParameters = $this->getAllResourceParameters();
 
 		foreach ($routeParameters as $routeParameter)
 		{
@@ -156,7 +199,9 @@ class ApiRequest
 		}
 
 		if($route === $requestUri)
+		{
 			return true;
+		}
 
 		return false;
 	}

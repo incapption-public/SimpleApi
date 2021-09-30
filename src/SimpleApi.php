@@ -2,11 +2,14 @@
 
 namespace Incapption\SimpleApi;
 
-use RuntimeException;
+use ReflectionClass;
+use ReflectionException;
 use Incapption\SimpleApi\Models\ApiRequest;
 use Incapption\SimpleApi\Models\StringResult;
 use Incapption\SimpleApi\Enums\HttpStatusCode;
 use Incapption\SimpleApi\Interfaces\iMethodResult;
+use Incapption\SimpleApi\Interfaces\iApiController;
+use Incapption\SimpleApi\Exceptions\SimpleApiException;
 
 abstract class SimpleApi
 {
@@ -20,10 +23,30 @@ abstract class SimpleApi
 	 */
 	private $requestMethod;
 
-	public function __construct(string $requestUri, string $requestMethod)
+	/**
+	 * @var array
+	 */
+	private $headers;
+
+	/**
+	 * @var array
+	 */
+	private $input;
+
+	/**
+	 * SimpleApi constructor.
+	 *
+	 * @param string $requestUri The request Uri
+	 * @param string $requestMethod The HTTP Request Method
+	 * @param array  $headers The request Headers (e.g. HttpHeader::getAll())
+	 * @param array  $input The input of $_REQUEST ($_GET, $_POST and $_COOKIE)
+	 */
+	public function __construct(string $requestUri, string $requestMethod, array $headers, array $input)
 	{
-		$this->requestUri = $requestUri;
+		$this->requestUri    = $requestUri;
 		$this->requestMethod = $requestMethod;
+		$this->headers       = $headers;
+		$this->input         = $input;
 	}
 
 	/**
@@ -48,38 +71,44 @@ abstract class SimpleApi
 	/**
 	 * Iterates the registered routes for the requested endpoint, calls the method and returns the result.
 	 *
-	 * @throws RuntimeException
 	 * @return iMethodResult
+	 * @throws ReflectionException
+	 * @throws SimpleApiException
 	 */
 	public function getResult() : iMethodResult
 	{
 		foreach (SimpleApiRoute::getRegisteredRoutes() as $item)
         {
 	        // parse route parameters and match them with values from requestUri
-	        $_apiRequest = new ApiRequest();
-	        $_apiRequest->parseRouteParameters($item->getRoute(), $this->requestUri);
+	        $_apiRequest = new ApiRequest($this->headers, $this->input);
+	        $_apiRequest->parseResourceParameters($item->getRoute(), $this->requestUri);
 
-        	if ($_apiRequest->compareRouteAndRequestUri($item->getRoute(), $this->requestUri) === false || strtoupper($this->requestMethod) !==
-		        strtoupper($item->getHttpMethod()->getValue()))
+        	if ($_apiRequest->compareRouteAndRequestUri($item->getRoute(), $this->requestUri) === false ||
+		        strtoupper($this->requestMethod) !== strtoupper($item->getHttpMethod()->getValue()))
 	        {
 	        	continue;
 	        }
 
         	if ($middleware = $item->getMiddleware())
 	        {
-	            $middleware->authorize();
+	            $middleware->handle($_apiRequest);
 	        }
 
-        	if (method_exists($item->getController(), $item->getMethod()) === false)
+        	$controllerReflection = new ReflectionClass($item->getController());
+
+        	if ($controllerReflection->hasMethod($item->getMethod()) === false)
 	        {
-	        	throw new RuntimeException($item->getController().'->'.$item->getMethod().'() does not exist');
+	        	throw new SimpleApiException($item->getController().'->'.$item->getMethod().'() does not exist');
 	        }
 
-        	// create instance of the controller
-	        $controller = $item->getController();
-	        $controller = new $controller();
+	        if ($controllerReflection->implementsInterface(iApiController::class) === false)
+	        {
+	        	throw new SimpleApiException($item->getController().' is not an API controller');
+	        }
 
-	        // call method
+	        $controller = $controllerReflection->newInstance();
+
+	        // Call the method on the controller with ApiRequest argument
             $result = call_user_func(array($controller, $item->getMethod()), $_apiRequest);
 
         	if ($result instanceof iMethodResult)
@@ -87,7 +116,7 @@ abstract class SimpleApi
 				return $result;
 	        }
 
-        	throw new RuntimeException($item->getController().'->'.$item->getMethod().'() has to return iMethodResult');
+        	throw new SimpleApiException($item->getController().'->'.$item->getMethod().'() has to return iMethodResult');
         }
 
 		return new StringResult(HttpStatusCode::NOT_FOUND(), 'Not Found: invalid api endpoint or method');

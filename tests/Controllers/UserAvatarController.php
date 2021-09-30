@@ -14,7 +14,10 @@ class UserAvatarController implements iApiController
 {
 	public function get(ApiRequest $request): iMethodResult
 	{
-		return new DataResult(HttpStatusCode::SUCCESS(), ['userId' => $request->get('userId')->getValue(), 'avatarId' => $request->get('avatarId')->getValue()]);
+		return new DataResult(HttpStatusCode::SUCCESS(), [
+			'userId' => $request->getResourceParameter('userId')->getValue(),
+			'avatarId' => $request->getResourceParameter('avatarId')->getValue()
+		]);
 	}
 
 	public function index(ApiRequest $request): iMethodResult

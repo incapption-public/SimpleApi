@@ -12,7 +12,7 @@ class UserController implements iApiController
 {
 	public function get(ApiRequest $request): iMethodResult
 	{
-		return new StringResult(HttpStatusCode::SUCCESS(), $request->get('userId')->getValue());
+		return new StringResult(HttpStatusCode::SUCCESS(), $request->getResourceParameter('userId')->getValue());
 	}
 
 	public function index(ApiRequest $request): iMethodResult
