@@ -47,12 +47,15 @@ abstract class SimpleApi
 
 	/**
 	 * Iterates the registered routes for the requested endpoint, calls the method and returns the result.
+	 *
+	 * @throws RuntimeException
+	 * @return iMethodResult
 	 */
 	public function getResult() : iMethodResult
 	{
 		foreach (SimpleApiRoute::getRegisteredRoutes() as $item)
         {
-	        // parse route parameters and match them with variables from requestUri
+	        // parse route parameters and match them with values from requestUri
 	        $_apiRequest = new ApiRequest();
 	        $_apiRequest->parseRouteParameters($item->getRoute(), $this->requestUri);
 
@@ -77,7 +80,7 @@ abstract class SimpleApi
 	        $controller = new $controller();
 
 	        // call method
-            $result = call_user_func_array(array($controller, $item->getMethod()), [$_apiRequest]);
+            $result = call_user_func(array($controller, $item->getMethod()), $_apiRequest);
 
         	if ($result instanceof iMethodResult)
 	        {

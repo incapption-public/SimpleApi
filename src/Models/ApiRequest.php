@@ -20,7 +20,7 @@ class ApiRequest
 	/**
 	 * @param RouteParameter $routeParameter
 	 */
-	public function add(RouteParameter $routeParameter)
+	public function addRouteParameter(RouteParameter $routeParameter)
 	{
 		$this->routeParameters[] = $routeParameter;
 	}
@@ -95,7 +95,7 @@ class ApiRequest
 		 *
 		 * e.g.
 		 * /api/user/{userId}/avatar/{avatarId}
-		 * Array
+		 * $matches = Array
 		 * (
          *	[0] => Array
          *	(
@@ -127,7 +127,7 @@ class ApiRequest
 					$_routeParameter->setPlaceholder($placeholder[$j]);
 					$_routeParameter->setValue($parameters[$j]);
 
-					$this->add($_routeParameter);
+					$this->addRouteParameter($_routeParameter);
 				}
 			}
 		}
@@ -135,7 +135,8 @@ class ApiRequest
 
 	/**
 	 * Replaces the placeholders in the route with the actual values
-	 * and compare route and requestUri
+	 * and compare route and requestUri.
+	 * Return true if they match.
 	 *
 	 * e.g.
 	 * requestUri = /api/user/1/avatar/20
