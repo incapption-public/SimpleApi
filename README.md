@@ -117,18 +117,18 @@ Create a `phpunit.xml` in the project directory. Run PHPUnit referencing this xm
 ```xml
 <?xml version="1.0" encoding="UTF-8"?>
 <phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" bootstrap="./vendor/autoload.php"
-  convertErrorsToExceptions="true" convertNoticesToExceptions="true" convertWarningsToExceptions="true"
-  processIsolation="false" stopOnFailure="true"
-  xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/9.5/phpunit.xsd">
-  <coverage>
-    <include>
-      <directory suffix=".php">src/</directory>
-    </include>
-  </coverage>
-  <testsuites>
-    <testsuite name="SimpleApi Test Suite">
-      <directory>tests</directory>
-    </testsuite>
-  </testsuites>
+         convertErrorsToExceptions="true" convertNoticesToExceptions="true" convertWarningsToExceptions="true"
+         processIsolation="false" stopOnFailure="true"
+         xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/9.5/phpunit.xsd">
+    <coverage>
+        <include>
+            <directory suffix=".php">src/</directory>
+        </include>
+    </coverage>
+    <testsuites>
+        <testsuite name="SimpleApi Test Suite">
+            <directory>tests</directory>
+        </testsuite>
+    </testsuites>
 </phpunit>
 ```
