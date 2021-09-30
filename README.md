@@ -1,4 +1,4 @@
-# SimpleREST
+# SimpleApi
 
 Tiny package for setting up a simple REST API with PHP.
 
