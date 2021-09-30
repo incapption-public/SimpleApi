@@ -94,8 +94,8 @@ class ApiRequest
     }
 
     /**
-     * This method takes a registered route and a request uri and parses the parameters
-     * In the route the placeholders are set like {userId}
+     * This method takes a registered route and a request uri and parses the parameters.
+     * The placeholders are set like {userId} in the route
      *
      * e.g. route      = /api/user/{userId}/avatar/{avatarId}
      *      requestUri = /api/user/1/avatar/20
@@ -162,7 +162,7 @@ class ApiRequest
             {
                 /*
                  * If a matching placeholder is found and the value is numeric
-                 * create a RouteParameter and add it to the registered route parameters
+                 * create a RouteParameter and add it to the registered route parameters.
                  */
                 if ($placeholder[$j] === $matches[0][$i] && is_numeric($parameters[$j]))
                 {
@@ -175,8 +175,7 @@ class ApiRequest
 
     /**
      * Replaces the placeholders in the route with the actual values
-     * and compare route and requestUri.
-     * Return true if they match.
+     * and compare route and requestUri. Return true if they match.
      *
      * e.g.
      * requestUri = /api/user/1/avatar/20
