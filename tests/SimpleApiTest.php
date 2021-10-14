@@ -69,12 +69,23 @@ class SimpleApiTest extends TestCase
     }
 
     /** @test */
+    public function get_user_with_hashId_authorized()
+    {
+        $api    = new SimpleApiExtension('/api/user/54gdf45fsd', 'get', $this->requestUserHeaders);
+        $result = $api->getResult();
+        $data   = json_decode($result->getJson(), true);
+
+        $this->assertEquals(200, $result->getStatusCode()->getValue(), 'Assert status code is 200');
+        $this->assertEquals('54gdf45fsd', $data['payload'], 'Assert user id is 54gdf45fsd');
+    }
+
+    /** @test */
     public function get_user_and_avatar_with_ids()
     {
         $api    = new SimpleApiExtension('/api/user/1/avatar/20', 'get', $this->requestUserHeaders);
         $result = $api->getResult();
         $data   = json_decode($result->getJson(), true);
-        $data   = json_decode($data['payload'], true);
+        $data   = $data['payload'];
 
         $this->assertEquals(200, $result->getStatusCode()->getValue(), 'Assert status code is 200');
         $this->assertEquals(1, $data['userId'], 'Assert user id is 1');

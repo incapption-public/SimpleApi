@@ -161,10 +161,10 @@ class ApiRequest
             for ($j = 0; $j < count($placeholder); $j++)
             {
                 /*
-                 * If a matching placeholder is found and the value is numeric
+                 * If a matching placeholder is found
                  * create a RouteParameter and add it to the registered route parameters.
                  */
-                if ($placeholder[$j] === $matches[0][$i] && is_numeric($parameters[$j]))
+                if ($placeholder[$j] === $matches[0][$i])
                 {
                     $_routeParameter = new ResourceParameter($matches[1][$i], $parameters[$j], $placeholder[$j]);
                     $this->addResourceParameter($_routeParameter);

@@ -4,7 +4,7 @@ Tiny package for setting up a simple REST API with PHP.
 
 ## Usage
 
-1. Implement the iApiController interface with your controller Currently a method can return `StringResult`
+1. Implement the iApiController interface with your controller. Currently a method can return `StringResult`
    or `DataResult` which returns a message or an array along with a status code.
 
 ```php
@@ -79,7 +79,7 @@ use Incapption\SimpleApi\Helper\HttpHeader;
 $api = new SimpleApiExtension($_SERVER["REQUEST_URI"], $_SERVER["REQUEST_METHOD"], HttpHeader::getAll(), $_REQUEST);
 
 // Check if the actual request is targeted at your API endpoint
-if ($api->isApiEndpoint('api/v1'))
+if ($api->isApiEndpoint('/api/v1'))
 {
   $result = $api->getResult();
   // Returns the result as JSON and exits the application
