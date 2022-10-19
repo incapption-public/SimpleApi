@@ -1,11 +1,12 @@
 # SimpleApi
 
-Tiny package for setting up a simple REST API with PHP.
+Tiny package for setting up a simple REST API with PHP.  
+Ability to group routes and define middlewares on a group or route level.
 
 ## Usage
 
-1. Implement the iApiController interface with your controller. Currently a method can return `StringResult`
-   or `DataResult` which returns a message or an array along with a status code.
+1. Implement the iApiController interface with your controller. A method can return `StringResult`
+   or `DataResult` which returns a message, or an array along with a status code.
 
 ```php
 <?php
@@ -45,7 +46,7 @@ class TestController implements iApiController
 }
 ```
 
-2. Extend the `SimpleApi` class. Here you can register your routes.
+2. Extend the `SimpleApi` class. Here you can group and register your routes.
 
 ```php
 <?php
@@ -65,7 +66,17 @@ class SimpleApiExtension extends SimpleApi
 
 	protected function registerRoutes()
 	{
-		SimpleApiRoute::registerGet('/api/currencies', TestController::class, 'get', new AuthenticationMiddleware());
+	  // A group which always requires authentication
+	  SimpleApiRoute::registerGroup('user', [new AuthenticationMiddleware()]);
+	  
+	  // A public endpoint not requiring authentication. The 'public' group is defined without middleware.
+		SimpleApiRoute::registerGet('public', '/api/currencies', TestController::class, 'get');
+		
+		// The middleware defined for group 'user' above will be executed when calling this route.
+		SimpleApiRoute::registerGet('user', '/api/user/{userId}/files', TestController::class, 'get');
+		
+		// Example for a group which might require user authentication middleware
+		SimpleApiRoute::registerGet('internal', '/api/schema', TestController::class, 'get', [new AuthenticationMiddleware()]);
 	}
 }
 ```
@@ -75,6 +86,7 @@ class SimpleApiExtension extends SimpleApi
 
 ```php
 use Incapption\SimpleApi\Helper\HttpHeader;
+use Incapption\SimpleApi\Tests\SimpleApiExtension;
 
 $api = new SimpleApiExtension($_SERVER["REQUEST_URI"], $_SERVER["REQUEST_METHOD"], HttpHeader::getAll(), $_REQUEST);
 
@@ -97,7 +109,8 @@ object:
 {
   "statusCode": 200,
   "payload": {
-    "test": true
+    "name": "John Doe",
+    "age": 27 
   }
 }
 ```

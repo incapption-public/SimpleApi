@@ -66,7 +66,7 @@ abstract class SimpleApi
     }
 
     /**
-     * Iterates the registered routes for the requested endpoint, calls the method and returns the result.
+     * Iterates the registered API groups and associated routes for the requested endpoint, calls the method and returns the result.
      *
      * @return iMethodResult
      * @throws ReflectionException
@@ -74,46 +74,54 @@ abstract class SimpleApi
      */
     public function getResult(): iMethodResult
     {
-        foreach (SimpleApiRoute::getRegisteredRoutes() as $item)
+        foreach (SimpleApiRoute::getRegisteredGroups() as $group)
         {
-            // parse route parameters and match them with values from requestUri
-            $_apiRequest = new ApiRequest($this->headers, $this->input);
-            $_apiRequest->parseResourceParameters($item->getRoute(), $this->requestUri);
-
-            if ($_apiRequest->compareRouteAndRequestUri($item->getRoute(), $this->requestUri) === false ||
-                strtoupper($this->requestMethod) !== strtoupper($item->getHttpMethod()->getValue()))
+            foreach ($group->getRoutes() as $item)
             {
-                continue;
+                // parse route parameters and match them with values from requestUri
+                $_apiRequest = new ApiRequest($this->headers, $this->input);
+                $_apiRequest->parseResourceParameters($item->getRoute(), $this->requestUri);
+
+                if ($_apiRequest->compareRouteAndRequestUri($item->getRoute(), $this->requestUri) === false ||
+                    strtoupper($this->requestMethod) !== strtoupper($item->getHttpMethod()->getValue()))
+                {
+                    continue;
+                }
+
+                foreach ($group->getMiddlewares() as $middleware)
+                {
+                    $middleware->handle($_apiRequest);
+                }
+
+                foreach ($item->getMiddlewares() as $middleware)
+                {
+                    $middleware->handle($_apiRequest);
+                }
+
+                $controllerReflection = new ReflectionClass($item->getController());
+
+                if ($controllerReflection->hasMethod($item->getMethod()) === false)
+                {
+                    throw new SimpleApiException($item->getController().'->'.$item->getMethod().'() does not exist');
+                }
+
+                if ($controllerReflection->implementsInterface(iApiController::class) === false)
+                {
+                    throw new SimpleApiException($item->getController().' is not an API controller');
+                }
+
+                $controller = $controllerReflection->newInstance();
+
+                // Call the method on the controller with ApiRequest argument
+                $result = call_user_func([$controller, $item->getMethod()], $_apiRequest);
+
+                if ($result instanceof iMethodResult)
+                {
+                    return $result;
+                }
+
+                throw new SimpleApiException($item->getController().'->'.$item->getMethod().'() has to return iMethodResult');
             }
-
-            if ($middleware = $item->getMiddleware())
-            {
-                $middleware->handle($_apiRequest);
-            }
-
-            $controllerReflection = new ReflectionClass($item->getController());
-
-            if ($controllerReflection->hasMethod($item->getMethod()) === false)
-            {
-                throw new SimpleApiException($item->getController().'->'.$item->getMethod().'() does not exist');
-            }
-
-            if ($controllerReflection->implementsInterface(iApiController::class) === false)
-            {
-                throw new SimpleApiException($item->getController().' is not an API controller');
-            }
-
-            $controller = $controllerReflection->newInstance();
-
-            // Call the method on the controller with ApiRequest argument
-            $result = call_user_func([$controller, $item->getMethod()], $_apiRequest);
-
-            if ($result instanceof iMethodResult)
-            {
-                return $result;
-            }
-
-            throw new SimpleApiException($item->getController().'->'.$item->getMethod().'() has to return iMethodResult');
         }
 
         return new StringResult(HttpStatusCode::NOT_FOUND(), 'Not Found: invalid api endpoint or method');

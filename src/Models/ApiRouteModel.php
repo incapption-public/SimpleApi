@@ -20,9 +20,9 @@ class ApiRouteModel
      */
     private $method;
     /**
-     * @var iApiMiddleware|null
+     * @var iApiMiddleware[]
      */
-    private $middleware;
+    private $middlewares = [];
     /**
      * @var HttpMethod
      */
@@ -105,11 +105,11 @@ class ApiRouteModel
     }
 
     /**
-     * @return iApiMiddleware|null
+     * @return iApiMiddleware[]
      */
-    public function getMiddleware(): ?iApiMiddleware
+    public function getMiddlewares(): array
     {
-        return $this->middleware;
+        return $this->middlewares;
     }
 
     /**
@@ -117,9 +117,24 @@ class ApiRouteModel
      *
      * @return ApiRouteModel
      */
-    public function setMiddleware(?iApiMiddleware $middleware): ApiRouteModel
+    public function addMiddleware(iApiMiddleware $middleware): ApiRouteModel
     {
-        $this->middleware = $middleware;
+        $this->middlewares[] = $middleware;
+        return $this;
+    }
+
+    /**
+     * @param array $middlewares
+     *
+     * @return ApiRouteModel
+     */
+    public function addMiddlewares(array $middlewares): ApiRouteModel
+    {
+        foreach ($middlewares as $middleware)
+        {
+           $this->addMiddleware($middleware);
+        }
+
         return $this;
     }
 }

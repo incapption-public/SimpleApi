@@ -20,8 +20,10 @@ class SimpleApiExtension extends SimpleApi
     protected function registerRoutes()
     {
         $userMiddleware = new AuthenticationMiddleware();
-        SimpleApiRoute::registerGet('/api/currencies', TestController::class, 'get', null);
-        SimpleApiRoute::registerGet('/api/user/{userId}', UserController::class, 'get', $userMiddleware);
-        SimpleApiRoute::registerGet('/api/user/{userId}/avatar/{avatarId}', UserAvatarController::class, 'get', $userMiddleware);
+        SimpleApiRoute::registerGroup('user', [$userMiddleware]);
+
+        SimpleApiRoute::registerGet('public', '/api/currencies', TestController::class, 'get');
+        SimpleApiRoute::registerGet('user', '/api/user/{userId}', UserController::class, 'get');
+        SimpleApiRoute::registerGet('user', '/api/user/{userId}/avatar/{avatarId}', UserAvatarController::class, 'get');
     }
 }
