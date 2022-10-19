@@ -110,7 +110,7 @@ object:
   "statusCode": 200,
   "payload": {
     "name": "John Doe",
-    "age": 27 
+    "age": 27
   }
 }
 ```
