@@ -58,26 +58,26 @@ use Incapption\SimpleApi\Tests\Middleware\AuthenticationMiddleware;
 
 class SimpleApiExtension extends SimpleApi
 {
-	public function __construct(string $requestUri, string $requestMethod, array $headers = [], array $input = [])
-	{
-		parent::__construct($requestUri, $requestMethod, $headers, $input);
-		$this->registerRoutes();
-	}
+  public function __construct(string $requestUri, string $requestMethod, array $headers = [], array $input = [])
+  {
+    parent::__construct($requestUri, $requestMethod, $headers, $input);
+    $this->registerRoutes();
+  }
 
-	protected function registerRoutes()
-	{
-	  // A group which always requires authentication
-	  SimpleApiRoute::registerGroup('user', [new AuthenticationMiddleware()]);
-	  
-	  // A public endpoint not requiring authentication. The 'public' group is defined without middleware.
-		SimpleApiRoute::registerGet('public', '/api/currencies', TestController::class, 'get');
-		
-		// The middleware defined for group 'user' above will be executed when calling this route.
-		SimpleApiRoute::registerGet('user', '/api/user/{userId}/files', TestController::class, 'get');
-		
-		// Example for a group which might require user authentication middleware
-		SimpleApiRoute::registerGet('internal', '/api/schema', TestController::class, 'get', [new AuthenticationMiddleware()]);
-	}
+  protected function registerRoutes()
+  {
+    // A group which always requires authentication
+    SimpleApiRoute::registerGroup('user', [new AuthenticationMiddleware()]);
+
+    // A public endpoint not requiring authentication. The 'public' group is defined without middleware.
+    SimpleApiRoute::registerGet('public', '/api/currencies', TestController::class, 'get');
+
+    // The middleware defined for group 'user' above will be executed when calling this route.
+    SimpleApiRoute::registerGet('user', '/api/user/{userId}/files', TestController::class, 'get');
+
+    // Example for a group which might require user authentication middleware
+    SimpleApiRoute::registerGet('internal', '/api/schema', TestController::class, 'get', [new AuthenticationMiddleware()]);
+  }
 }
 ```
 
