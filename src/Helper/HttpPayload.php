@@ -15,7 +15,7 @@ class HttpPayload
      */
     public static function isJsonContentType() : bool
     {
-        return HttpHeader::get('CONTENT-TYPE') === 'application/json';
+        return substr(HttpHeader::get('CONTENT-TYPE'), 0, strlen('application/json')) === 'application/json';
     }
 
     /**
