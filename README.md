@@ -86,9 +86,9 @@ class SimpleApiExtension extends SimpleApi
 
 ```php
 use Incapption\SimpleApi\Helper\HttpHeader;
-use Incapption\SimpleApi\Tests\SimpleApiExtension;
+use Incapption\SimpleApi\Helper\HttpPayload;use Incapption\SimpleApi\Tests\SimpleApiExtension;
 
-$api = new SimpleApiExtension($_SERVER["REQUEST_URI"], $_SERVER["REQUEST_METHOD"], HttpHeader::getAll(), $_REQUEST);
+$api = new SimpleApiExtension($_SERVER["REQUEST_URI"], $_SERVER["REQUEST_METHOD"], HttpHeader::getAll(), HttpPayload::getInput());
 
 // Check if the actual request is targeted at your API endpoint
 if ($api->isApiEndpoint('/api/v1'))

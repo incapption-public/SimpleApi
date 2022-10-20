@@ -9,7 +9,7 @@ namespace Incapption\SimpleApi\Helper;
 class HttpHeader
 {
     /**
-     * Fetches all http headers and returns an array
+     * Fetches all http headers in upper case and returns an array
      *
      * @return array
      */
@@ -28,16 +28,16 @@ class HttpHeader
     /**
      * fetches a specific http header and returns its value
      *
-     * @param $name
+     * @param $name string Case insensitive header name
      *
-     * @return string|bool
+     * @return ?string header value or null if header is not set
      */
-    public static function get($name)
+    public static function get(string $name): ?string
     {
         $header = self::getAll();
 
-        if (empty($header[$name]))
-            return false;
+        if (empty($header[strtoupper($name)]))
+            return null;
 
         return $header[$name];
     }
