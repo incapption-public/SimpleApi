@@ -24,7 +24,7 @@ class ApiRequest
      * ApiRequest constructor.
      *
      * @param array $headers The request headers
-     * @param array $input   The input of $_REQUEST ($_GET, $_POST and $_COOKIE)
+     * @param array $input   The input of the request (e.g. $_REQUEST)
      */
     public function __construct(array $headers, array $input)
     {
@@ -41,6 +41,16 @@ class ApiRequest
     public function input(string $key)
     {
         return array_key_exists($key, $this->input) ? $this->input[$key] : null;
+    }
+
+    /**
+     * Returns all inputs / payload of this request
+     *
+     * @return array
+     */
+    public function inputs() : array
+    {
+        return $this->input;
     }
 
     /**

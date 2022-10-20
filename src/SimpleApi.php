@@ -36,7 +36,7 @@ abstract class SimpleApi
      * @param string $requestUri    The request Uri
      * @param string $requestMethod The HTTP Request Method
      * @param array  $headers       The request Headers (e.g. HttpHeader::getAll())
-     * @param array  $input         The input of $_REQUEST ($_GET, $_POST and $_COOKIE)
+     * @param array  $input         The input of the request (e.g. $_REQUEST)
      */
     public function __construct(string $requestUri, string $requestMethod, array $headers, array $input)
     {
