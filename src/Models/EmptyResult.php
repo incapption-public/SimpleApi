@@ -14,6 +14,6 @@ class EmptyResult extends MethodResult implements iMethodResult
 
     public function getJson(): string
     {
-        return '';
+        return '{}';
     }
 }
