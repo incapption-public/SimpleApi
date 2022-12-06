@@ -11,6 +11,7 @@ use Incapption\SimpleApi\Interfaces\iMethodResult;
 use Incapption\SimpleApi\Interfaces\iApiController;
 use Incapption\SimpleApi\Interfaces\iApiMiddleware;
 use Incapption\SimpleApi\Exceptions\SimpleApiException;
+use Incapption\SimpleApi\Interfaces\iWebhookController;
 
 abstract class SimpleApi
 {
@@ -128,7 +129,8 @@ abstract class SimpleApi
                     throw new SimpleApiException($item->getController().'->'.$item->getMethod().'() does not exist');
                 }
 
-                if ($controllerReflection->implementsInterface(iApiController::class) === false)
+                if ($controllerReflection->implementsInterface(iApiController::class) === false &&
+                    $controllerReflection->implementsInterface(iWebhookController::class) === false)
                 {
                     throw new SimpleApiException($item->getController().' is not an API controller');
                 }
