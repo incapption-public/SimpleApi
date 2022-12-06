@@ -21,14 +21,19 @@ class HttpPayload
     /**
      * Returns given HTTP Input depending on Content-Type
      *
-     * If Content-Type is application/json, returns JSON + $_GET parameters
+     * If Content-Type is application/json, returns JSON array + $_GET parameters
      * Otherwise returns $_POST + $_GET parameters
      *
      * @return array
      */
     public static function getInput() : array
     {
-        return self::isJsonContentType() ? json_decode(file_get_contents('php://input'), true) + $_GET :
-            $_POST + $_GET;
+        if (self::isJsonContentType())
+        {
+            $content = json_decode(file_get_contents('php://input'), true);
+            return is_array($content) ? $content + $_GET : $_GET;
+        }
+
+        return $_POST + $_GET;
     }
 }
