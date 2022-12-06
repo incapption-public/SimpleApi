@@ -23,7 +23,7 @@ class ApiRequest
     /**
      * ApiRequest constructor.
      *
-     * @param array $headers The request headers
+     * @param array $headers The request headers, case insensitive
      * @param array $input   The input of the request (e.g. $_REQUEST)
      */
     public function __construct(array $headers, array $input)
@@ -34,13 +34,14 @@ class ApiRequest
     }
 
     /**
-     * @param string $key The key of the input
+     * @param string $key The key of the input, case insensitive
      *
      * @return mixed|null
      */
     public function input(string $key)
     {
-        return array_key_exists($key, $this->input) ? $this->input[$key] : null;
+        $inputs = array_change_key_case($this->input, CASE_LOWER);
+        return array_key_exists($key, $inputs) ? $inputs[$key] : null;
     }
 
     /**
@@ -54,13 +55,14 @@ class ApiRequest
     }
 
     /**
-     * @param string $key The key of the header
+     * @param string $key The key of the header, case insensitive
      *
      * @return mixed|null
      */
     public function header(string $key)
     {
-        return array_key_exists($key, $this->headers) ? $this->headers[$key] : null;
+        $headers = array_change_key_case($this->headers, CASE_LOWER);
+        return array_key_exists($key, $headers) ? $headers[$key] : null;
     }
 
     /**
