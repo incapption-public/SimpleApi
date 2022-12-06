@@ -41,7 +41,8 @@ class ApiRequest
     public function input(string $key)
     {
         $inputs = array_change_key_case($this->input, CASE_LOWER);
-        return array_key_exists(strtolower($key), $inputs) ? $inputs[$key] : null;
+        $key = strtolower($key);
+        return array_key_exists($key, $inputs) ? $inputs[$key] : null;
     }
 
     /**
@@ -62,7 +63,8 @@ class ApiRequest
     public function header(string $key)
     {
         $headers = array_change_key_case($this->headers, CASE_LOWER);
-        return array_key_exists(strtolower($key), $headers) ? $headers[$key] : null;
+        $key = strtolower($key);
+        return array_key_exists($key, $headers) ? $headers[$key] : null;
     }
 
     /**
