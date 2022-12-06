@@ -95,7 +95,7 @@ if ($api->isApiEndpoint('/api/v1'))
 {
   $result = $api->getResult();
   // Returns the result as JSON and exits the application
-  $api->echoResultExit($result);
+  $api->sendAndTerminate($result);
 }
 ```
 

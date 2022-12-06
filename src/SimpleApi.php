@@ -9,6 +9,7 @@ use Incapption\SimpleApi\Models\StringResult;
 use Incapption\SimpleApi\Enums\HttpStatusCode;
 use Incapption\SimpleApi\Interfaces\iMethodResult;
 use Incapption\SimpleApi\Interfaces\iApiController;
+use Incapption\SimpleApi\Interfaces\iApiMiddleware;
 use Incapption\SimpleApi\Exceptions\SimpleApiException;
 
 abstract class SimpleApi
@@ -29,6 +30,14 @@ abstract class SimpleApi
      * @var array
      */
     private $input;
+    /**
+     * @var ApiRequest|null
+     */
+    private $apiRequest;
+    /**
+     * @var iApiMiddleware[]
+     */
+    private $requestMiddlewares = [];
 
     /**
      * SimpleApi constructor.
@@ -66,6 +75,16 @@ abstract class SimpleApi
     }
 
     /**
+     * Get the request object. Null until a route matches the request
+     *
+     * @return ApiRequest|null
+     */
+    public function getApiRequest() : ?ApiRequest
+    {
+        return $this->apiRequest;
+    }
+
+    /**
      * Iterates the registered API groups and associated routes for the requested endpoint, calls the method and returns the result.
      *
      * @return iMethodResult
@@ -88,13 +107,17 @@ abstract class SimpleApi
                     continue;
                 }
 
+                $this->apiRequest = $_apiRequest;
+
                 foreach ($group->getMiddlewares() as $middleware)
                 {
+                    $this->requestMiddlewares[] = $middleware;
                     $middleware->handle($_apiRequest);
                 }
 
                 foreach ($item->getMiddlewares() as $middleware)
                 {
+                    $this->requestMiddlewares[] = $middleware;
                     $middleware->handle($_apiRequest);
                 }
 
@@ -130,6 +153,7 @@ abstract class SimpleApi
     /**
      * Echoes JSON result, sets the status code and exits the application.
      *
+     * @deprecated Use sendAndTerminate
      * @param iMethodResult $result
      */
     public function echoResultExit(iMethodResult $result)
@@ -138,5 +162,79 @@ abstract class SimpleApi
         http_response_code($result->getStatusCode()->getValue());
         echo $result->getJson();
         exit;
+    }
+
+    /**
+     * Sends status code and json result to client, then terminates middleware and exits the application.
+     *
+     * @param iMethodResult $result
+     */
+    public function sendAndTerminate(iMethodResult $result)
+    {
+        $this->sendHeadersAndStatusCode($result);
+        $this->sendContent($result);
+        $this->terminateMiddleware($result);
+        exit;
+    }
+
+    private function terminateMiddleware(iMethodResult $result)
+    {
+        foreach ($this->requestMiddlewares as $middleware)
+        {
+            if (method_exists($middleware, 'terminate'))
+            {
+                $middleware->terminate($this->apiRequest, $result);
+            }
+        }
+    }
+
+    private function sendHeadersAndStatusCode(iMethodResult $result)
+    {
+        header('Content-Type: application/json; charset=utf-8');
+        http_response_code($result->getStatusCode()->getValue());
+    }
+
+    private function sendContent(iMethodResult $result)
+    {
+        echo $result->getJson();
+
+        if (\function_exists('fastcgi_finish_request'))
+        {
+            fastcgi_finish_request();
+        }
+        elseif (\function_exists('litespeed_finish_request'))
+        {
+            litespeed_finish_request();
+        }
+        elseif (!\in_array(\PHP_SAPI, ['cli', 'phpdbg'], true))
+        {
+            static::closeOutputBuffers(0, true);
+            flush();
+        }
+    }
+
+    /**
+     * Source: https://github.com/symfony/symfony/blob/6.2/src/Symfony/Component/HttpFoundation/Response.php
+     * Cleans or flushes output buffers up to target level.
+     *
+     * Resulting level can be greater than target level if a non-removable buffer has been encountered.
+     *
+     * @final
+     */
+    public static function closeOutputBuffers(int $targetLevel, bool $flush): void
+    {
+        $status = ob_get_status(true);
+        $level = \count($status);
+        $flags = \PHP_OUTPUT_HANDLER_REMOVABLE | ($flush ? \PHP_OUTPUT_HANDLER_FLUSHABLE : \PHP_OUTPUT_HANDLER_CLEANABLE);
+
+        while ($level-- > $targetLevel && ($s = $status[$level]) &&
+            (!isset($s['del']) ? !isset($s['flags']) || ($s['flags'] & $flags) === $flags : $s['del']))
+        {
+            if ($flush) {
+                ob_end_flush();
+            } else {
+                ob_end_clean();
+            }
+        }
     }
 }
