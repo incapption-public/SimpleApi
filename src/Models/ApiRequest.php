@@ -11,14 +11,36 @@ class ApiRequest
      * @var ResourceParameter[]
      */
     private $resourceParameters;
+
     /**
      * @var array
      */
     private $headers;
+
+    /**
+     * @var array
+     */
+    private $headersLowerCaseKeys;
+
     /**
      * @var array
      */
     private $input;
+
+    /**
+     * @var array
+     */
+    private $inputLowerCaseKeys;
+
+    /**
+     * @var string|null
+     */
+    private $requestUri;
+
+    /**
+     * @var string|null
+     */
+    private $requestRoute;
 
     /**
      * ApiRequest constructor.
@@ -28,31 +50,60 @@ class ApiRequest
      */
     public function __construct(array $headers, array $input)
     {
-        $this->resourceParameters = [];
-        $this->headers            = $headers;
-        $this->input              = $input;
+        $this->resourceParameters   = [];
+        $this->headers              = $headers;
+        $this->headersLowerCaseKeys = array_change_key_case($this->headers, CASE_LOWER);
+        $this->input                = $input;
+        $this->inputLowerCaseKeys   = array_change_key_case($this->input, CASE_LOWER);
     }
 
     /**
-     * @param string $key The key of the input, case insensitive
+     * Indicates whether a given input exits.
+     *
+     * @param string $key
+     *
+     * @return bool
+     */
+    public function hasInput(string $key) : bool
+    {
+        $key = strtolower($key);
+        return array_key_exists($key, $this->inputLowerCaseKeys);
+    }
+
+    /**
+     * @param string $key The case insensitive key of the input
      *
      * @return mixed|null
      */
     public function input(string $key)
     {
-        $inputs = array_change_key_case($this->input, CASE_LOWER);
         $key = strtolower($key);
-        return array_key_exists($key, $inputs) ? $inputs[$key] : null;
+        return array_key_exists($key, $this->inputLowerCaseKeys) ? $this->inputLowerCaseKeys[$key] : null;
     }
 
     /**
      * Returns all inputs / payload of this request
      *
+     * @param bool $lowerCaseKeys Returns the input array with keys converted to lower case
+     *
      * @return array
      */
-    public function inputs() : array
+    public function inputs(bool $lowerCaseKeys = false) : array
     {
-        return $this->input;
+        return $lowerCaseKeys ? $this->inputLowerCaseKeys : $this->input;
+    }
+
+    /**
+     * Indicates whether a given header exits.
+     *
+     * @param string $key
+     *
+     * @return bool
+     */
+    public function hasHeader(string $key) : bool
+    {
+        $key = strtolower($key);
+        return array_key_exists($key, $this->headersLowerCaseKeys);
     }
 
     /**
@@ -62,9 +113,62 @@ class ApiRequest
      */
     public function header(string $key)
     {
-        $headers = array_change_key_case($this->headers, CASE_LOWER);
         $key = strtolower($key);
-        return array_key_exists($key, $headers) ? $headers[$key] : null;
+        return array_key_exists($key, $this->headersLowerCaseKeys) ? $this->headersLowerCaseKeys[$key] : null;
+    }
+
+    /**
+     * Returns all headers of this request
+     *
+     * @param bool $lowerCaseKeys Returns the input array with keys converted to lower case
+     *
+     * @return array
+     */
+    public function headers(bool $lowerCaseKeys = false) : array
+    {
+        return $lowerCaseKeys ? $this->headersLowerCaseKeys : $this->headers;
+    }
+
+    /**
+     * Get the Uri of this request.
+     *
+     * @return string|null
+     */
+    public function getRequestUri(): ?string
+    {
+        return $this->requestUri;
+    }
+
+    /**
+     * @param string $requestUri
+     *
+     * @return ApiRequest
+     */
+    public function setRequestUri(string $requestUri): ApiRequest
+    {
+        $this->requestUri = $requestUri;
+        return $this;
+    }
+
+    /**
+     * Get the route of this request, as registered in the API definition
+     *
+     * @return string|null
+     */
+    public function getRequestRoute(): ?string
+    {
+        return $this->requestRoute;
+    }
+
+    /**
+     * @param string $requestRoute
+     *
+     * @return ApiRequest
+     */
+    public function setRequestRoute(string $requestRoute): ApiRequest
+    {
+        $this->requestRoute = $requestRoute;
+        return $this;
     }
 
     /**

@@ -108,6 +108,8 @@ abstract class SimpleApi
                     continue;
                 }
 
+                $_apiRequest->setRequestRoute($item->getRoute());
+                $_apiRequest->setRequestUri($this->requestUri);
                 $this->apiRequest = $_apiRequest;
 
                 foreach ($group->getMiddlewares() as $middleware)
