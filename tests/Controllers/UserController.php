@@ -3,6 +3,7 @@
 namespace Incapption\SimpleApi\Tests\Controllers;
 
 use Incapption\SimpleApi\Models\ApiRequest;
+use Incapption\SimpleApi\Models\DataResult;
 use Incapption\SimpleApi\Models\StringResult;
 use Incapption\SimpleApi\Enums\HttpStatusCode;
 use Incapption\SimpleApi\Interfaces\iMethodResult;
@@ -12,7 +13,7 @@ class UserController implements iApiController
 {
     public function get(ApiRequest $request): iMethodResult
     {
-        return new StringResult(HttpStatusCode::SUCCESS(), $request->getResourceParameter('userId')->getValue());
+        return new DataResult(HttpStatusCode::SUCCESS(), ['id' => $request->getResourceParameter('userId')->getValue()]);
     }
 
     public function index(ApiRequest $request): iMethodResult

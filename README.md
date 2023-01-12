@@ -5,8 +5,7 @@ Ability to group routes and define middlewares on a group or route level.
 
 ## Usage
 
-1. Implement the iApiController interface with your controller. A method can return `StringResult`
-   or `DataResult` which returns a message, or an array along with a status code.
+1. Implement the iApiController interface with your controller. A method can return `StringResult`, `DataResult` or `ErrorResult` which always return arrays with different structure based on the result.
 
 ```php
 <?php
@@ -81,8 +80,7 @@ class SimpleApiExtension extends SimpleApi
 }
 ```
 
-3. In your application root (e.g. app.php) use this controller to verify if the request is an API request, call the
-   method and return the result.
+3. In your application root (e.g. app.php) use this controller to verify if the request is an API request, call the method and return the result.
 
 ```php
 use Incapption\SimpleApi\Helper\HttpHeader;
@@ -99,26 +97,37 @@ if ($api->isApiEndpoint('/api/v1'))
 }
 ```
 
-The returned JSON format is like this depending on whether the Controller method returns a `StringResult`or `DataResult`
-object:
+The returned JSON format is like this depending on whether the Controller method returns a `StringResult`, `DataResult` or `ErrorResult` object:
 
-`statusCode` indicates the HTTP status code
-`payload` is of type `string` or `object`
-
+Example for `DataResult` which returns an object of unknown structure.
 ```json
 {
-  "statusCode": 200,
-  "payload": {
-    "name": "John Doe",
-    "age": 27
-  }
+  "name": "John Doe",
+  "age": 27
+}
+```
+
+Example for return type `StringResult`, which always returns a `message` of type `string`
+```json
+{
+  "message": "This request was a success"
+}
+```
+
+Example for return type `ErrorResult`, which always contains an `errors` key which contains either a string or list of errors.
+```json
+{
+  "errors": "User ID is required"
 }
 ```
 
 ```json
 {
-  "statusCode": 200,
-  "payload": "This request was a success"
+  "errors": {
+     "user_id": [
+        "Must be of type string"
+     ]
+  }
 }
 ```
 

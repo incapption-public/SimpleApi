@@ -20,9 +20,6 @@ class DataResult extends MethodResult implements iMethodResult
 
     public function getJson(): string
     {
-        return json_encode([
-            self::JSON_KEY_STATUS_CODE => $this->getStatusCode()->getValue(),
-            self::JSON_KEY_PAYLOAD     => $this->data,
-        ]);
+        return json_encode($this->data);
     }
 }

@@ -2,7 +2,6 @@
 
 namespace Incapption\SimpleApi\Tests\Controllers;
 
-use PHPUnit\Framework\MockObject\Api;
 use Incapption\SimpleApi\Models\DataResult;
 use Incapption\SimpleApi\Models\ApiRequest;
 use Incapption\SimpleApi\Models\StringResult;

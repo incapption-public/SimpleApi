@@ -10,8 +10,8 @@ abstract class MethodResult
      * @var HttpStatusCode
      */
     protected $statusCode;
-    protected const JSON_KEY_STATUS_CODE = 'statusCode';
-    protected const JSON_KEY_PAYLOAD = 'payload';
+    protected const JSON_KEY_MESSAGE = 'message';
+    protected const JSON_KEY_ERRORS = 'errors';
 
     public function getStatusCode(): HttpStatusCode
     {

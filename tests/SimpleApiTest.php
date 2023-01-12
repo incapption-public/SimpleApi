@@ -65,7 +65,7 @@ class SimpleApiTest extends TestCase
         $data   = json_decode($result->getJson(), true);
 
         $this->assertEquals(200, $result->getStatusCode()->getValue(), 'Assert status code is 200');
-        $this->assertEquals(1, $data['payload'], 'Assert user id is 1');
+        $this->assertEquals(1, $data['id'], 'Assert user id is 1');
     }
 
     /** @test */
@@ -76,7 +76,7 @@ class SimpleApiTest extends TestCase
         $data   = json_decode($result->getJson(), true);
 
         $this->assertEquals(200, $result->getStatusCode()->getValue(), 'Assert status code is 200');
-        $this->assertEquals('54gdf45fsd', $data['payload'], 'Assert user id is 54gdf45fsd');
+        $this->assertEquals('54gdf45fsd', $data['id'], 'Assert user id is 54gdf45fsd');
     }
 
     /** @test */
@@ -85,7 +85,6 @@ class SimpleApiTest extends TestCase
         $api    = new SimpleApiExtension('/api/user/1/avatar/20', 'get', $this->requestUserHeaders);
         $result = $api->getResult();
         $data   = json_decode($result->getJson(), true);
-        $data   = $data['payload'];
 
         $this->assertEquals(200, $result->getStatusCode()->getValue(), 'Assert status code is 200');
         $this->assertEquals(1, $data['userId'], 'Assert user id is 1');
@@ -100,6 +99,6 @@ class SimpleApiTest extends TestCase
         $data   = json_decode($result->getJson(), true);
 
         $this->assertEquals(200, $result->getStatusCode()->getValue(), 'Assert status code is 200');
-        $this->assertEquals(1, $data['payload'], 'Assert user id is 1');
+        $this->assertEquals(1, $data['id'], 'Assert user id is 1');
     }
 }

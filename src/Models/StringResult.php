@@ -21,8 +21,7 @@ class StringResult extends MethodResult implements iMethodResult
     public function getJson(): string
     {
         return json_encode([
-            self::JSON_KEY_STATUS_CODE => $this->getStatusCode()->getValue(),
-            self::JSON_KEY_PAYLOAD     => $this->message,
+            self::JSON_KEY_MESSAGE => $this->message,
         ]);
     }
 }

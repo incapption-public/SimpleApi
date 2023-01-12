@@ -3,6 +3,7 @@
 namespace Incapption\SimpleApi\Tests\Middleware;
 
 use Incapption\SimpleApi\Models\ApiRequest;
+use Incapption\SimpleApi\Enums\HttpStatusCode;
 use Incapption\SimpleApi\Interfaces\iMethodResult;
 use Incapption\SimpleApi\Interfaces\iApiMiddleware;
 use Incapption\SimpleApi\Exceptions\SimpleApiException;
@@ -16,7 +17,7 @@ class AuthenticationMiddleware implements iApiMiddleware
     {
         if ($apiRequest->header('X-AUTH-TOKEN') === null || $apiRequest->header('X-AUTH-TOKEN') !== 'VALID')
         {
-            throw new SimpleApiException('Unauthorized');
+            throw new SimpleApiException('Unauthorized', HttpStatusCode::UNAUTHORIZED());
         }
     }
 
