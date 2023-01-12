@@ -6,6 +6,7 @@ use MyCLabs\Enum\Enum;
 
 /**
  * @method static self SUCCESS()
+ * @method static self BAD_REQUEST()
  * @method static self UNAUTHORIZED()
  * @method static self FORBIDDEN()
  * @method static self NOT_FOUND()
@@ -17,6 +18,7 @@ use MyCLabs\Enum\Enum;
 class HttpStatusCode extends Enum
 {
     private const SUCCESS = 200;
+    private const BAD_REQUEST = 400;
     private const UNAUTHORIZED = 401;
     private const FORBIDDEN = 403;
     private const NOT_FOUND = 404;
