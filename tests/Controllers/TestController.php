@@ -10,6 +10,10 @@ use Incapption\SimpleApi\Interfaces\iApiController;
 
 class TestController implements iApiController
 {
+    public function __construct(ApiRequest $request)
+    {
+    }
+
     public function get(ApiRequest $request): iMethodResult
     {
         return new StringResult(HttpStatusCode::SUCCESS(), 'TestController->get()');
