@@ -137,8 +137,7 @@ abstract class SimpleApi
                     throw new SimpleApiException($item->getController().' is not an API controller');
                 }
 
-                // Create the instance, constructor is optional
-                $controller = $controllerReflection->newInstance($_apiRequest);
+                $controller = $controllerReflection->newInstance();
 
                 // Call the method on the controller with ApiRequest argument
                 $result = call_user_func([$controller, $item->getMethod()], $_apiRequest);
