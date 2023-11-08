@@ -45,16 +45,16 @@ class ApiRequest
     /**
      * ApiRequest constructor.
      *
-     * @param array $headers The request headers, case insensitive
+     * @param array $headers The request headers, case-insensitive
      * @param array $input   The input of the request (e.g. $_REQUEST)
      */
     public function __construct(array $headers, array $input)
     {
         $this->resourceParameters   = [];
         $this->headers              = $headers;
-        $this->headersLowerCaseKeys = array_change_key_case($this->headers, CASE_LOWER);
+        $this->headersLowerCaseKeys = array_change_key_case($this->headers);
         $this->input                = $input;
-        $this->inputLowerCaseKeys   = array_change_key_case($this->input, CASE_LOWER);
+        $this->inputLowerCaseKeys   = array_change_key_case($this->input);
     }
 
     /**
@@ -71,7 +71,7 @@ class ApiRequest
     }
 
     /**
-     * @param string $key The case insensitive key of the input
+     * @param string $key The case-insensitive key of the input
      *
      * @return mixed|null
      */
@@ -79,6 +79,19 @@ class ApiRequest
     {
         $key = strtolower($key);
         return array_key_exists($key, $this->inputLowerCaseKeys) ? $this->inputLowerCaseKeys[$key] : null;
+    }
+
+    /**
+     * Merge new input into the current request's input array.
+     *
+     * @param array $input
+     *
+     * @return void
+     */
+    public function merge(array $input)
+    {
+        $this->input = array_merge_recursive($this->input, $input);
+        $this->inputLowerCaseKeys = array_change_key_case($this->input);
     }
 
     /**
