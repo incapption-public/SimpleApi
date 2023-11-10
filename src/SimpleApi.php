@@ -12,6 +12,7 @@ use Incapption\SimpleApi\Interfaces\iApiController;
 use Incapption\SimpleApi\Interfaces\iApiMiddleware;
 use Incapption\SimpleApi\Exceptions\SimpleApiException;
 use Incapption\SimpleApi\Interfaces\iWebhookController;
+use Incapption\SimpleApi\Interfaces\iConstructableApiController;
 
 abstract class SimpleApi
 {
@@ -132,13 +133,21 @@ abstract class SimpleApi
                 }
 
                 if ($controllerReflection->implementsInterface(iApiController::class) === false &&
-                    $controllerReflection->implementsInterface(iWebhookController::class) === false)
+                    $controllerReflection->implementsInterface(iWebhookController::class) === false &&
+                    $controllerReflection->implementsInterface(iConstructableApiController::class) === false)
                 {
                     throw new SimpleApiException($item->getController().' is not an API controller');
                 }
 
                 // Create the instance
-                $controller = $controllerReflection->newInstance($_apiRequest);
+                if ($controllerReflection->implementsInterface(iConstructableApiController::class))
+                {
+                    $controller = $controllerReflection->newInstance($_apiRequest);
+                }
+                else
+                {
+                    $controller = $controllerReflection->newInstance();
+                }
 
                 // Call the method on the controller with ApiRequest argument
                 $result = call_user_func([$controller, $item->getMethod()], $_apiRequest);

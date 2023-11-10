@@ -6,8 +6,6 @@ use Incapption\SimpleApi\Models\ApiRequest;
 
 interface iApiController
 {
-    public function __construct(ApiRequest $request);
-
     public function get(ApiRequest $request): iMethodResult;
 
     public function index(ApiRequest $request): iMethodResult;

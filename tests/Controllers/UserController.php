@@ -11,10 +11,6 @@ use Incapption\SimpleApi\Interfaces\iApiController;
 
 class UserController implements iApiController
 {
-    public function __construct(ApiRequest $request)
-    {
-    }
-
     public function get(ApiRequest $request): iMethodResult
     {
         return new DataResult(HttpStatusCode::SUCCESS(), ['id' => $request->getResourceParameter('userId')->getValue()]);

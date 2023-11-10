@@ -7,8 +7,9 @@ use Incapption\SimpleApi\Models\StringResult;
 use Incapption\SimpleApi\Enums\HttpStatusCode;
 use Incapption\SimpleApi\Interfaces\iMethodResult;
 use Incapption\SimpleApi\Interfaces\iApiController;
+use Incapption\SimpleApi\Interfaces\iConstructableApiController;
 
-class TestController implements iApiController
+class TestController implements iApiController, iConstructableApiController
 {
     public function __construct(ApiRequest $request)
     {
