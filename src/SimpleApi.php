@@ -125,18 +125,18 @@ abstract class SimpleApi
                     $middleware->handle($_apiRequest);
                 }
 
-                $controllerReflection = new ReflectionClass($item->getController());
+                try
+                {
+                    $controllerReflection = new ReflectionClass($item->getController());
+                }
+                catch(ReflectionException $e)
+                {
+                    throw new SimpleApiException($item->getController().' does not exist', null, 0, $e);
+                }
 
                 if ($controllerReflection->hasMethod($item->getMethod()) === false)
                 {
                     throw new SimpleApiException($item->getController().'->'.$item->getMethod().'() does not exist');
-                }
-
-                if ($controllerReflection->implementsInterface(iApiController::class) === false &&
-                    $controllerReflection->implementsInterface(iWebhookController::class) === false &&
-                    $controllerReflection->implementsInterface(iConstructableApiController::class) === false)
-                {
-                    throw new SimpleApiException($item->getController().' is not an API controller');
                 }
 
                 // Create the instance
