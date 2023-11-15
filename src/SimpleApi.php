@@ -143,7 +143,7 @@ abstract class SimpleApi
                 $controller = $this->createInstance($controllerReflection, $_apiRequest);
 
                 // Call the method on the controller with ApiRequest argument
-                $result = call_user_func([$controller, $item->getMethod()], $_apiRequest);
+                $result = $this->callFunction($controller, $item->getMethod(), $_apiRequest);
 
                 if ($result instanceof iMethodResult)
                 {
@@ -158,7 +158,7 @@ abstract class SimpleApi
     }
 
     /**
-     * Create an instance based on a reflection class. Can be overwritten with own implementation (e.g. using dependency injection)
+     * Create an instance based on a reflection class. Can be overwritten with own implementation (e.g. using dependency injection).
      * @param ReflectionClass $class
      * @param ApiRequest      $request
      *
@@ -169,6 +169,20 @@ abstract class SimpleApi
     {
         return $class->implementsInterface(iConstructableApiController::class) ?
             $class->newInstance($request) : $class->newInstance();
+    }
+
+    /**
+     * Execute call_user_func on a constructed class, passing the ApiRequest as argument. Can be overwritten with own implementation (e.g. using dependency injection).
+     *
+     * @param object     $controller
+     * @param string     $method
+     * @param ApiRequest $request
+     *
+     * @return mixed
+     */
+    protected function callFunction(object $controller, string $method, ApiRequest $request)
+    {
+        return call_user_func([$controller, $method], $request);
     }
 
     /**
