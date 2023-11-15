@@ -140,14 +140,7 @@ abstract class SimpleApi
                 }
 
                 // Create the instance
-                if ($controllerReflection->implementsInterface(iConstructableApiController::class))
-                {
-                    $controller = $controllerReflection->newInstance($_apiRequest);
-                }
-                else
-                {
-                    $controller = $controllerReflection->newInstance();
-                }
+                $controller = $this->createInstance($controllerReflection, $_apiRequest);
 
                 // Call the method on the controller with ApiRequest argument
                 $result = call_user_func([$controller, $item->getMethod()], $_apiRequest);
@@ -162,6 +155,20 @@ abstract class SimpleApi
         }
 
         return new StringResult(HttpStatusCode::NOT_FOUND(), 'Not Found: invalid api endpoint or method');
+    }
+
+    /**
+     * Create an instance based on a reflection class. Can be overwritten with own implementation (e.g. using dependency injection)
+     * @param ReflectionClass $class
+     * @param ApiRequest      $request
+     *
+     * @return object
+     * @throws ReflectionException
+     */
+    protected function createInstance(ReflectionClass $class, ApiRequest $request): object
+    {
+        return $class->implementsInterface(iConstructableApiController::class) ?
+            $class->newInstance($request) : $class->newInstance();
     }
 
     /**
