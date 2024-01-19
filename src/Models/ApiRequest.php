@@ -95,6 +95,39 @@ class ApiRequest
     }
 
     /**
+     * Overwrite the current request's input array recursively.
+     *
+     * @param array $input
+     *
+     * @return void
+     */
+    public function overwrite(array $input)
+    {
+        $this->input = $this->arrayOverwriteRecursive($this->input, $input);
+        $this->inputLowerCaseKeys = array_change_key_case($this->input);
+    }
+
+    /**
+     * Recursively overwrite elements from passed arrays into the first array.
+     *
+     * @param array $array1 The array to be overwritten.
+     * @param array $array2 The array with values to overwrite.
+     *
+     * @return array
+     */
+    private function arrayOverwriteRecursive(array &$array1, array $array2): array
+    {
+        foreach ($array2 as $key => $value) {
+            if (array_key_exists($key, $array1) && is_array($value)) {
+                $array1[$key] = $this->arrayOverwriteRecursive($array1[$key], $value);
+            } else {
+                $array1[$key] = $value;
+            }
+        }
+        return $array1;
+    }
+
+    /**
      * Returns all inputs / payload of this request
      *
      * @param bool $lowerCaseKeys Returns the input array with keys converted to lower case
