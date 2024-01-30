@@ -359,7 +359,10 @@ class ApiRequest
             $route = str_replace($routeParameter->getPlaceholder(), $routeParameter->getValue(), $route);
         }
 
-        if ($route === $requestUri)
+        $parsedUrl = parse_url($requestUri);
+
+        // Compare the route with the requestUri without a possible query string
+        if ($route === $parsedUrl['path'])
         {
             return true;
         }
